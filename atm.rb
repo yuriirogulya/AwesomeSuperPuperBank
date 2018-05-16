@@ -9,13 +9,13 @@ account_number = gets.chomp
 puts 'Enter Your Password:'
 account_password = STDIN.noecho(&:gets).chomp
 
-if ACCOUNTS[account_number.to_i].nil?
+if config['accounts'][account_number.to_i].nil?
   puts 'ERROR: WRONG ACCOUNT NUMBER'
   return
 else
-  if account_password == ACCOUNTS[account_number.to_i]['password']
+  if account_password == config['accounts'][account_number.to_i]['password']
     puts '-' * 50
-    puts "Hello, #{ACCOUNTS[account_number.to_i]['name']}\n"
+    puts "Hello, #{config['accounts'][account_number.to_i]['name']}\n"
   else
     puts 'ERROR: ACCOUNT NUMBER AND PASSWORD DON\'T MATCH'
     return
@@ -31,20 +31,20 @@ loop do
 
   case option
     when 1
-      puts "\nYour Current Balance is ₴#{ACCOUNTS[account_number.to_i]['balance']}" 
+      puts "\nYour Current Balance is ₴#{config['accounts'][account_number.to_i]['balance']}" 
     when 2
       loop do
         puts "\nEnter Amount You Wish to Withdraw:\n"
         amount = gets.chomp.to_i
 
-        if amount > money_in_atm
+        if amount > money_in_atm(config)
           puts "\nTHE MAXIMUM AMOUNT AVALIBLE IN THIS ATM IS ₴#{money_in_atm}. PLEASE ENTER A DIFFERENT AMOUNT\n" 
-        elsif amount > ACCOUNTS[account_number.to_i]['balance'].to_i
+        elsif amount > config['accounts'][account_number.to_i]['balance'].to_i
           puts "\nERROR: INSUFFICIENT FUNDS!! PLEASE ENTER A DIFFERENT AMOUNT\n"
-        elsif !can_be_composed?(amount)
+        elsif !can_be_composed?(amount, config)
           puts "\nTHE AMOUNT YOU REQUESTED CANNOT BE COMPOSED FROM BILLS AVAILABLE IN THIS ATM. PLEASE ENTER A DIFFERENT AMOUNT\n"
         else
-          new_balance = ACCOUNTS[account_number.to_i]['balance'].to_i - amount
+          new_balance = config['accounts'][account_number.to_i]['balance'].to_i - amount
           config['accounts'][account_number.to_i]['balance'] = new_balance
           File.open("./config.yml", 'w') { |f| YAML.dump(config, f) } 
           puts "\nYour New Balance is ₴#{new_balance}\n"
@@ -52,7 +52,7 @@ loop do
         end
       end
     when 3
-      puts "\n#{ACCOUNTS[account_number.to_i]['name']}, Thank You For Using Our ATM. Good-Bye!"
+      puts "\n#{config['accounts'][account_number.to_i]['name']}, Thank You For Using Our ATM. Good-Bye!"
       return
     else 
       puts "\nERROR: WRONG INPUT\n"

@@ -1,27 +1,20 @@
-require 'yaml'
+def can_be_composed?(amount, config)
+  bills = Array(config['banknotes'].keys)
+  values = Array(config['banknotes'].values)
 
-config = YAML.load_file(ARGV.first || './config.yml')
-
-BANKNOTES = config['banknotes']
-ACCOUNTS = config['accounts']
-
-def can_be_composed?(amount)
-  bills = Array(BANKNOTES.keys)
-  values = Array(BANKNOTES.values)
-
-  (BANKNOTES.keys.count).times do |i|
+  (config['banknotes'].keys.count).times do |i|
     issued_banknotes = (amount - (amount % bills[i])) / bills[i]
     if issued_banknotes <= values[i]
-      amount -= bills[i] * issued_banknotes
+     amount -= bills[i] * issued_banknotes
+     config['banknotes'][bills[i]] -= issued_banknotes
     else
-      amount -= bills[i] * values[i]
-    end  
-  end 
+     amount -= bills[i] * values[i]
+    end
+  end
+  File.open("./config.yml", 'w') { |f| YAML.dump(config, f) }
   amount == 0
 end
 
-def money_in_atm
-  money_in_atm = 0
-  BANKNOTES.each{ |x,y| money_in_atm += x*y }
-  money_in_atm  
+def money_in_atm(config)
+  money_in_atm = config['banknotes'].reduce(0) { |summ, (key, value)| summ + key * value }
 end
