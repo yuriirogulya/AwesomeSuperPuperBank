@@ -37,8 +37,11 @@ loop do
         puts "\nEnter Amount You Wish to Withdraw:\n"
         amount = gets.chomp.to_i
 
-        if amount > money_in_atm(config)
-          puts "\nTHE MAXIMUM AMOUNT AVALIBLE IN THIS ATM IS ₴#{money_in_atm}. PLEASE ENTER A DIFFERENT AMOUNT\n" 
+        if amount < 0
+          puts "\nAMOUNT CAN\'T BE NEGATIVE\n"
+          amount = 0
+        elsif amount > money_in_atm(config)
+          puts "\nTHE MAXIMUM AMOUNT AVALIBLE IN THIS ATM IS ₴#{money_in_atm(config)}. PLEASE ENTER A DIFFERENT AMOUNT\n" 
         elsif amount > config['accounts'][account_number.to_i]['balance'].to_i
           puts "\nERROR: INSUFFICIENT FUNDS!! PLEASE ENTER A DIFFERENT AMOUNT\n"
         elsif !can_be_composed?(amount, config)
