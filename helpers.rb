@@ -23,5 +23,5 @@ def withdraw(config, account_number, amount)
   new_balance = config['accounts'][account_number.to_i]['balance'].to_i - amount
   config['accounts'][account_number.to_i]['balance'] = new_balance
   File.open("./config.yml", 'w') { |f| YAML.dump(config, f) } 
-  puts "\nYour New Balance is ₴#{new_balance}\n"
+  puts "\nYour New Balance is ₴#{new_balance}\n".colorize(:green)
 end

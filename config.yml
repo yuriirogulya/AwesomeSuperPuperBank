@@ -1,7 +1,7 @@
 ---
 banknotes:
   500: 2
-  200: 1
+  200: 0
   100: 0
   50: 0
   20: 2
@@ -13,7 +13,7 @@ accounts:
   3321:
     name: Volodymyr
     password: mypass
-    balance: 472
+    balance: 272
   5922:
     name: Iryna
     password: ho#ll_§1
