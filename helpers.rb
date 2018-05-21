@@ -18,3 +18,10 @@ end
 def money_in_atm(config)
   money_in_atm = config['banknotes'].reduce(0) { |summ, (key, value)| summ + key * value }
 end
+
+def withdraw(config, account_number, amount)
+  new_balance = config['accounts'][account_number.to_i]['balance'].to_i - amount
+  config['accounts'][account_number.to_i]['balance'] = new_balance
+  File.open("./config.yml", 'w') { |f| YAML.dump(config, f) } 
+  puts "\nYour New Balance is ₴#{new_balance}\n"
+end

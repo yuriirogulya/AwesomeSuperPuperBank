@@ -47,10 +47,7 @@ loop do
         elsif !can_be_composed?(amount, config)
           puts "\nTHE AMOUNT YOU REQUESTED CANNOT BE COMPOSED FROM BILLS AVAILABLE IN THIS ATM. PLEASE ENTER A DIFFERENT AMOUNT\n"
         else
-          new_balance = config['accounts'][account_number.to_i]['balance'].to_i - amount
-          config['accounts'][account_number.to_i]['balance'] = new_balance
-          File.open("./config.yml", 'w') { |f| YAML.dump(config, f) } 
-          puts "\nYour New Balance is ₴#{new_balance}\n"
+          withdraw(config, account_number, amount)
           break
         end
       end
