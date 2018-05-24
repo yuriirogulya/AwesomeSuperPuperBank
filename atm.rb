@@ -1,24 +1,23 @@
 require 'yaml'
 require 'io/console'
 require_relative './helpers.rb'
-require 'colorize'
 
 config = YAML.load_file(ARGV.first || './config.yml')
 
-puts 'Please Enter Your Account Number:'.colorize(:light_yellow)
+puts 'Please Enter Your Account Number:'
 account_number = gets.chomp
-puts 'Enter Your Password:'.colorize(:light_yellow)
+puts 'Enter Your Password:'
 account_password = STDIN.noecho(&:gets).chomp
 
-if config['accounts'][account_number.to_i].nil?
-  puts 'ERROR: WRONG ACCOUNT NUMBER'.colorize(:red)
+if get_user(config, account_number).nil?
+  puts 'ERROR: WRONG ACCOUNT NUMBER'
   return
 else
-  if account_password == config['accounts'][account_number.to_i]['password']
+  if account_password == get_user(config, account_number)['password']
     puts '-' * 50
-    puts "Hello, #{config['accounts'][account_number.to_i]['name']}\n".colorize(:green)
+    puts "Hello, #{get_user(config, account_number)['name']}\n"
   else
-    puts 'ERROR: ACCOUNT NUMBER AND PASSWORD DON\'T MATCH'.colorize(:red)
+    puts 'ERROR: ACCOUNT NUMBER AND PASSWORD DON\'T MATCH'
     return
   end
 end
@@ -27,36 +26,36 @@ loop do
   puts "\nPlease Choose From the Following Options:
       1. Display Balance
       2. Withdraw
-      3. Log Out\n".colorize(:light_cyan)
+      3. Log Out\n"
   option = gets.chomp.to_i
 
   case option
     when 1
-      puts "\nYour Current Balance is ₴#{config['accounts'][account_number.to_i]['balance']}".colorize(:green)
+      puts "\nYour Current Balance is ₴#{get_user(config, account_number)['balance']}"
     when 2
       loop do
-        puts "\nEnter Amount You Wish to Withdraw:\n".colorize(:light_yellow)
+        puts "\nEnter Amount You Wish to Withdraw:\n"
         amount = gets.chomp.to_i
 
         if amount < 0
-          puts "\nAMOUNT CAN\'T BE NEGATIVE\n".colorize(:red)
+          puts "\nAMOUNT CAN\'T BE NEGATIVE\n"
           amount = 0
         elsif amount > money_in_atm(config)
-          puts "\nTHE MAXIMUM AMOUNT AVALIBLE IN THIS ATM IS ₴#{money_in_atm(config)}. PLEASE ENTER A DIFFERENT AMOUNT\n".colorize(:red)
+          puts "\nTHE MAXIMUM AMOUNT AVALIBLE IN THIS ATM IS ₴#{money_in_atm(config)}. PLEASE ENTER A DIFFERENT AMOUNT\n"
         elsif amount > config['accounts'][account_number.to_i]['balance'].to_i
-          puts "\nERROR: INSUFFICIENT FUNDS!! PLEASE ENTER A DIFFERENT AMOUNT\n".colorize(:red)
+          puts "\nERROR: INSUFFICIENT FUNDS!! PLEASE ENTER A DIFFERENT AMOUNT\n"
         elsif !can_be_composed?(amount, config)
-          puts "\nTHE AMOUNT YOU REQUESTED CANNOT BE COMPOSED FROM BILLS AVAILABLE IN THIS ATM. PLEASE ENTER A DIFFERENT AMOUNT\n".colorize(:red)
+          puts "\nTHE AMOUNT YOU REQUESTED CANNOT BE COMPOSED FROM BILLS AVAILABLE IN THIS ATM. PLEASE ENTER A DIFFERENT AMOUNT\n"
         else
           withdraw(config, account_number, amount)
           break
         end
       end
     when 3
-      puts "\n#{config['accounts'][account_number.to_i]['name']}, Thank You For Using Our ATM. Good-Bye!".colorize(:green)
+      puts "\n#{get_user(config, account_number)['name']}, Thank You For Using Our ATM. Good-Bye!"
       return
     else 
-      puts "\nERROR: WRONG INPUT\n".colorize(:red)
+      puts "\nERROR: WRONG INPUT\n"
   end
 end
 

@@ -1,3 +1,7 @@
+def get_user (config, user_number)
+  config['accounts'][user_number.to_i]
+end
+
 def can_be_composed?(amount, config)
   bills = Array(config['banknotes'].keys)
   values = Array(config['banknotes'].values)
@@ -20,8 +24,8 @@ def money_in_atm(config)
 end
 
 def withdraw(config, account_number, amount)
-  new_balance = config['accounts'][account_number.to_i]['balance'].to_i - amount
-  config['accounts'][account_number.to_i]['balance'] = new_balance
+  new_balance = get_user(config, account_number)['balance'].to_i - amount
+  get_user(config, account_number)['balance'] = new_balance
   File.open("./config.yml", 'w') { |f| YAML.dump(config, f) } 
-  puts "\nYour New Balance is ₴#{new_balance}\n".colorize(:green)
+  puts "\nYour New Balance is ₴#{new_balance}\n"
 end
